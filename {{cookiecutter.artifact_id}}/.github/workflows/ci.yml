@@ -1,0 +1,27 @@
+name: "build"
+on:
+  push:
+    branches:
+        - 'master'
+    tags-ignore:
+        - '*'
+        
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to GitHub Container Registry
+        if: startsWith(github.event.ref, 'refs/tags')
+        run: |
+            {% raw %}echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io --username ${{ github.repository_owner }} --password-stdin{% endraw %}
+      - name: "Build Docker image"
+        run: | 
+          docker build . -f containers/Dockerfile \
+            -t ghcr.io/{{ cookiecutter.artifact_org }}/{{ cookiecutter.artifact_id }}:latest \
+            -t ghcr.io/{{ cookiecutter.artifact_org }}/{{ cookiecutter.artifact_id }}:v0.0.0
+      - name: "Release Docker image"
+        if: startsWith(github.event.ref, 'refs/tags')
+        run: | 
+          docker push ghcr.io/{{ cookiecutter.artifact_org }}/{{ cookiecutter.artifact_id }}:latest \
+          docker push ghcr.io/{{ cookiecutter.artifact_org }}/{{ cookiecutter.artifact_id }}:v0.0.0

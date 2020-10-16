@@ -1,0 +1,10 @@
+{
+    "artifact_name": "my docker image",
+    "artifact_id": "{{ cookiecutter.artifact_name.lower().replace(' ', '-').replace(' ','-') }}",
+    "artifact_org": "stracquadaniolab",
+    "artifact_repo": "{{ cookiecutter.artifact_org}}/docker-{{ cookiecutter.artifact_id }}",
+    "artifact_author": "Giovanni Stracquadanio",
+    "artifact_email": "giovanni.stracquadanio@ed.ac.uk",
+    "artifact_description": "A short description of the image.",
+    "artifact_license": ["MIT", "BSD", "None"]
+}
