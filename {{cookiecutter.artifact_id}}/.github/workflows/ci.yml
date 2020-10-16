@@ -1,10 +1,5 @@
 name: "build"
-on:
-  push:
-    branches:
-        - 'master'
-    tags-ignore:
-        - '*'
+on: [push]
         
 jobs:
   build:
@@ -17,11 +12,11 @@ jobs:
             {% raw %}echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io --username ${{ github.repository_owner }} --password-stdin{% endraw %}
       - name: "Build Docker image"
         run: | 
-          docker build . -f containers/Dockerfile \
+          docker build . \
             -t ghcr.io/{{ cookiecutter.artifact_org }}/{{ cookiecutter.artifact_id }}:latest \
             -t ghcr.io/{{ cookiecutter.artifact_org }}/{{ cookiecutter.artifact_id }}:v0.0.0
       - name: "Release Docker image"
         if: startsWith(github.event.ref, 'refs/tags')
         run: | 
-          docker push ghcr.io/{{ cookiecutter.artifact_org }}/{{ cookiecutter.artifact_id }}:latest \
+          docker push ghcr.io/{{ cookiecutter.artifact_org }}/{{ cookiecutter.artifact_id }}:latest
           docker push ghcr.io/{{ cookiecutter.artifact_org }}/{{ cookiecutter.artifact_id }}:v0.0.0
